@@ -1,12 +1,10 @@
 package ir.tehranpuzzle.mistery.payload.request;
 
-import java.util.Set;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class SignupRequest {
+public class EditUserRequest {
     
     @NotBlank
     @Size(min = 3, max = 20)
@@ -23,12 +21,16 @@ public class SignupRequest {
     @Email
     private String email;
 
-    
-    private Set<String> role;
-
     @NotBlank
     @Size(min = 6, max = 40)
     private String password;
+
+    @NotBlank
+    @Size(min = 6, max = 40)
+    private String confirm_password;
+
+    public EditUserRequest() {
+    }
 
     public String getUsername() {
         return username;
@@ -54,14 +56,6 @@ public class SignupRequest {
         this.phone = phone;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -70,11 +64,22 @@ public class SignupRequest {
         this.email = email;
     }
 
-    public Set<String> getRole() {
-        return this.role;
+    public String getPassword() {
+        return password;
     }
 
-    public void setRole(Set<String> role) {
-        this.role = role;
+    public void setPassword(String password) {
+        this.password = password;
     }
+
+    public String getConfirm_password() {
+        return confirm_password;
+    }
+
+    public void setConfirm_password(String confirm_password) {
+        this.confirm_password = confirm_password;
+    }
+
+    
+
 }

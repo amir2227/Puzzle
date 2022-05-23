@@ -8,6 +8,7 @@ import ir.tehranpuzzle.mistery.exception.NotFoundException;
 import ir.tehranpuzzle.mistery.models.ERole;
 import ir.tehranpuzzle.mistery.models.Role;
 import ir.tehranpuzzle.mistery.models.User;
+import ir.tehranpuzzle.mistery.payload.request.EditUserRequest;
 import ir.tehranpuzzle.mistery.payload.request.SignupRequest;
 import ir.tehranpuzzle.mistery.repositorys.RoleRepository;
 import ir.tehranpuzzle.mistery.repositorys.UserRepository;
@@ -78,6 +79,12 @@ public class UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User Not Found with username" + username));
         return user;
+    }
+    public User Edit(Long user_id,EditUserRequest request){
+        User user = this.get(user_id);
+        //TODO edit user staff
+
+        return userRepository.save(user);
     }
 
 }
