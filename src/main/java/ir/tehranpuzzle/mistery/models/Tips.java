@@ -5,10 +5,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "Tips")
+@JsonIgnoreProperties({"puzzle"})
 public class Tips {
     
     @Id
@@ -20,6 +25,62 @@ public class Tips {
 
     @Column(length = 60)
     private String img;
-
     
+    @Column
+    private Boolean state;
+
+    @ManyToOne
+    @JoinColumn(name = "puzzle_id")
+    private Puzzle puzzle;
+
+    public Tips() {
+    }
+
+    public Tips(String text, String img, Boolean state) {
+        this.text = text;
+        this.img = img;
+        this.state = state;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public Boolean getState() {
+        return state;
+    }
+
+    public void setState(Boolean state) {
+        this.state = state;
+    }
+
+    public Puzzle getPuzzle() {
+        return puzzle;
+    }
+
+    public void setPuzzle(Puzzle puzzle) {
+        this.puzzle = puzzle;
+    }
+
+
 }

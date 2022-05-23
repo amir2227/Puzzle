@@ -3,6 +3,8 @@ package ir.tehranpuzzle.mistery.models;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,21 +28,26 @@ public class User {
 
     @NotBlank
     @Size(max = 20)
+    @Column(length = 20)
     private String username;
 
     @Size(max = 30)
+    @Column(length = 30)
     private String fullname;
 
     @Size(max = 30)
+    @Column(length = 30)
     private String email;
 
     @NotBlank
     @Size(max = 11)
+    @Column(length = 11)
     private String phone;
 
     @NotBlank
     @Size(max = 120)
     @JsonIgnore
+    @Column(length = 120)
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)

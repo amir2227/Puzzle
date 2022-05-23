@@ -7,11 +7,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "puzzle")
+@JsonIgnoreProperties({ "shop" })
 public class Puzzle {
 
     @Id
@@ -24,22 +29,25 @@ public class Puzzle {
     @Column(length = 100)
     private String img;
 
-    @OneToMany(mappedBy = "puzzle")
-    private List<Tips> tips;
-
     @Column(length = 60)
     private String answer;
+
+    @ManyToOne
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
+
+    @OneToMany(mappedBy = "puzzle")
+    private List<Tips> tips;
 
     public Puzzle() {
     }
 
-
-    public Puzzle(String text, String img, String answer) {
+    public Puzzle(String text, String img, String answer, Shop shop) {
         this.text = text;
         this.img = img;
         this.answer = answer;
+        this.shop = shop;
     }
-
 
     public Long getId() {
         return id;
@@ -79,6 +87,14 @@ public class Puzzle {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
 }
