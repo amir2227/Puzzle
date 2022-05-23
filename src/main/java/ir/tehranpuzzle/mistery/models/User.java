@@ -1,6 +1,7 @@
 package ir.tehranpuzzle.mistery.models;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -28,7 +30,7 @@ public class User {
 
     @Size(max = 30)
     private String fullname;
-    
+
     @Size(max = 30)
     private String email;
 
@@ -45,10 +47,11 @@ public class User {
     @JoinTable
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<Shop> shops;
+
     public User() {
     }
-
-   
 
     public User(@NotBlank @Size(max = 20) String username, @Size(max = 30) String fullname,
             @Size(max = 30) String email, @NotBlank @Size(max = 11) String phone,
@@ -59,8 +62,6 @@ public class User {
         this.phone = phone;
         this.password = password;
     }
-
-
 
     public Long getId() {
         return id;
@@ -118,5 +119,4 @@ public class User {
         this.roles = roles;
     }
 
-    
 }

@@ -18,9 +18,10 @@ public class DemoData {
     @EventListener
     public void appReady(ApplicationReadyEvent event) {
         Long roles = repo.count();
-        if(roles < 2){ 
-        repo.save(new Role(ERole.ROLE_ADMIN));
-        repo.save(new Role(ERole.ROLE_USER));
+        if(roles < 3){ 
+        repo.save(new Role(ERole.ADMIN));
+        repo.save(new Role(ERole.USER));
+        repo.save(new Role(ERole.SHOP_OWNER));
         }
     }
 }
