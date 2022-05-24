@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -38,6 +39,16 @@ public class ControllerAdvice {
   @ExceptionHandler(value = BadRequestException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorMessage handleUserBadRequestException(BadRequestException ex, WebRequest request) {
+    return new ErrorMessage(
+        HttpStatus.BAD_REQUEST.value(),
+        new Date(),
+        ex.getMessage(),
+        request.getDescription(false));
+  }
+
+  @ExceptionHandler(value = MaxUploadSizeExceededException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ErrorMessage handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex, WebRequest request) {
     return new ErrorMessage(
         HttpStatus.BAD_REQUEST.value(),
         new Date(),

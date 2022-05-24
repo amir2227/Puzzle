@@ -16,9 +16,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "shop")
-@JsonIgnoreProperties({"user"})
+@JsonIgnoreProperties({ "user", "img" })
 public class Shop {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,6 +28,12 @@ public class Shop {
 
     @Column(length = 30)
     private String type;
+
+    @Column
+    private String description;
+
+    @Column(length = 90)
+    private String img;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -39,9 +45,10 @@ public class Shop {
     public Shop() {
     }
 
-    public Shop(String name, String type, User user) {
+    public Shop(String name, String type,String description, User user) {
         this.name = name;
         this.type = type;
+        this.description = description;
         this.user = user;
     }
 
@@ -69,6 +76,22 @@ public class Shop {
         this.type = type;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
     public User getUser() {
         return user;
     }
@@ -85,5 +108,4 @@ public class Shop {
         this.puzzles = puzzles;
     }
 
-    
 }

@@ -11,7 +11,13 @@ import ir.tehranpuzzle.mistery.models.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
+    Optional<User> findByPhone(String phone);
+
+    Optional<User> findByEmail(String email);
+
     Boolean existsByUsername(String username);
 
     Boolean existsByPhone(String phone);
+
+    Boolean existsByEmail(String email);
 }
