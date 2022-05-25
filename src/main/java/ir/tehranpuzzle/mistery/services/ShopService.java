@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ir.tehranpuzzle.mistery.exception.BadRequestException;
 import ir.tehranpuzzle.mistery.exception.NotFoundException;
 import ir.tehranpuzzle.mistery.minio.FileServiceImpl;
-import ir.tehranpuzzle.mistery.minio.FileUtil;
 import ir.tehranpuzzle.mistery.models.Shop;
 import ir.tehranpuzzle.mistery.models.User;
 import ir.tehranpuzzle.mistery.payload.request.ShopRequest;
@@ -61,7 +60,11 @@ public class ShopService {
         return shoplist;
     }
 
-    public byte[] getImage(Long id){
+    public List<Shop> getAllShops() {
+        return shopRepository.findAll();
+    }
+
+    public byte[] getImage(Long id) {
         Shop s = this.get(id);
         return fileServiceImpl.getFile(s.getImg(), imageFolder);
     }
@@ -94,5 +97,21 @@ public class ShopService {
         System.out.printf("deleteFile started from User with {}", fileName);
         fileServiceImpl.deleteFile(fileName, folder);
         System.out.printf("deleteFile completed successfully from User with {} ", fileName);
+    }
+
+    public String delete(Long id, Long user_id) {
+
+        Shop shop = this.get(id);
+        String filename = shop.getImg();
+        if (shop.getUser().getId() != user_id)
+            throw new BadRequestException("access denied");
+        try {
+            shopRepository.delete(shop);
+            this.deleteFile(filename, imageFolder);
+            return "successfully deleted";
+        } catch (Exception e) {
+            // TODO: handle exception
+            return "cannot be deleted!";
+        }
     }
 }

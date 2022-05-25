@@ -2,6 +2,8 @@ package ir.tehranpuzzle.mistery.minio;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.utility.RandomString;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,7 +57,7 @@ public class FileUtil {
 
     public String generateUniqueName(String extension) {
         Date date = new Date();
-        return date.getTime() + "." + extension;
+        return RandomString.make(9)+"-"+date.getTime() + "." + extension;
     }
 
     public String getFileExtensionFromInputStream(InputStream inputStream) {

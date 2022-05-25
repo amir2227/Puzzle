@@ -1,7 +1,6 @@
 package ir.tehranpuzzle.mistery.minio;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.springframework.web.multipart.MultipartFile;
 

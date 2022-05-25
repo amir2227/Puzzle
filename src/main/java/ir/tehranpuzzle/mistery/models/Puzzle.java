@@ -2,6 +2,7 @@ package ir.tehranpuzzle.mistery.models;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "puzzle")
-@JsonIgnoreProperties({ "shop" })
+@JsonIgnoreProperties({ "shop", "answer" })
 public class Puzzle {
 
     @Id
@@ -36,15 +37,14 @@ public class Puzzle {
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
-    @OneToMany(mappedBy = "puzzle")
+    @OneToMany(mappedBy = "puzzle", cascade = CascadeType.REMOVE)
     private List<Tips> tips;
 
     public Puzzle() {
     }
 
-    public Puzzle(String text, String img, String answer, Shop shop) {
+    public Puzzle(String text, String answer, Shop shop) {
         this.text = text;
-        this.img = img;
         this.answer = answer;
         this.shop = shop;
     }

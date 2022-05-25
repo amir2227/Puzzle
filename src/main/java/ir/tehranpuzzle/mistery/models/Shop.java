@@ -2,6 +2,7 @@ package ir.tehranpuzzle.mistery.models;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,7 +40,7 @@ public class Shop {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "shop")
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE)
     private List<Puzzle> puzzles;
 
     public Shop() {
