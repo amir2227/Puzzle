@@ -1,7 +1,10 @@
 package ir.tehranpuzzle.mistery.controllers;
 
+import java.util.Map;
+
 import javax.validation.Valid;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -51,22 +54,25 @@ public class ShopOwnerController extends handleValidationExceptions {
         return ResponseEntity.ok(result);
     }
 
-    @ApiOperation(value = "get all shops")
+    @ApiOperation(value = "get all user shops")
     @GetMapping("")
     public ResponseEntity<?> search() {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-
-        return ResponseEntity.ok(shopService.search());
+        .getPrincipal();
+        return ResponseEntity.ok(shopService.search(userDetails.getId()));
     }
 
-    @ApiOperation(value = "get one shop")
+    @ApiOperation(value = "get one shop ")
     @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable("id") Long id) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
+        return ResponseEntity.ok().body(shopService.get(id));
+    }
 
-        return ResponseEntity.ok(shopService.getOneByImage(id));
+    @ApiOperation(value = "get one shop image")
+    @GetMapping("/{id}/image")
+    public ResponseEntity<?> getimage(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
+        .body(shopService.getImage(id));
     }
 
 }

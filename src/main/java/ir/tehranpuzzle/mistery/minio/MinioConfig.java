@@ -1,5 +1,7 @@
 package ir.tehranpuzzle.mistery.minio;
 
+import io.minio.BucketExistsArgs;
+import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,12 +15,26 @@ public class MinioConfig {
     private String secretKet;
     @Value("${minio.url}")
     private String url;
+    @Value("${minio.bucket}")
+    private String bucket;
 
     @Bean
     public MinioClient minioClient() {
-        return MinioClient.builder()
-                .credentials(accessKey, secretKet)
-                .endpoint(url).build();
+        MinioClient minioClient = MinioClient.builder().endpoint(url)
+                .credentials(accessKey, secretKet).build();
+        try {
+            boolean isExist = minioClient.bucketExists(BucketExistsArgs.builder()
+                    .bucket(bucket).build());
+            if (!isExist) {
+                minioClient.makeBucket(MakeBucketArgs.builder()
+                        .bucket(bucket)
+                        .build());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return minioClient;
     }
 
 }

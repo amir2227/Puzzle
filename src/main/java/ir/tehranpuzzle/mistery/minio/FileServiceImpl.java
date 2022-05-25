@@ -41,29 +41,33 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 public class FileServiceImpl implements FileService {
     @Autowired
     private MinioClient minioClient;
+
     @Autowired
     private FileUtil fileUtil;
+
     @Value("${minio.bucket}")
     private String bucketName;
+    
     private final String IMAGE_MEDIA_TYPE = "image";
 
     @SneakyThrows
     @Override
     public byte[] getFile(String fileName, String folder) {
         String objectName = folder + fileName;
+        byte[] stream = null ;
         GetObjectArgs minioRequest = GetObjectArgs.builder().bucket(bucketName).object(objectName).build();
-        byte[] bytes = null;
+        
         try {
-            bytes = minioClient.getObject(minioRequest).readAllBytes();
+            stream = minioClient.getObject(minioRequest).readAllBytes();
         } catch (InvalidKeyException | InsufficientDataException | InternalException | InvalidResponseException
         | NoSuchAlgorithmException | ServerException | XmlParserException | IOException | ErrorResponseException e) {
             System.out.printf("Minio error occurred with: {}, {}, {}",
                     kv("code", e.hashCode()), kv("message", e.getMessage()),
                     kv("trace", e.getStackTrace()));
         }
-        return bytes;
+        return stream;
     }
-
+    
     @SneakyThrows
     @Override
     public String uploadImage(MultipartFile file, String folder, boolean isResize) throws IOException {

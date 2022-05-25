@@ -54,19 +54,16 @@ public class ShopService {
         return shop;
     }
 
-    public Map<String, Object> search() {
+    public Map<String, Object> search(Long id) {
         Map<String, Object> shoplist = new HashMap<>();
-        List<Shop> shops = shopRepository.findAll();
+        List<Shop> shops = shopRepository.findByUser_id(id);
         shoplist.put("shops", shops);
         return shoplist;
     }
 
-    public Map<String, Object> getOneByImage(Long id){
+    public byte[] getImage(Long id){
         Shop s = this.get(id);
-        Map<String, Object> shop = new HashMap<>();
-        shop.put("shop", s);
-        shop.put("image", fileServiceImpl.getFile(s.getImg(), imageFolder));
-        return shop;
+        return fileServiceImpl.getFile(s.getImg(), imageFolder);
     }
 
     @Transactional
