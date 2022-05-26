@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class SignupRequest {
@@ -16,14 +17,14 @@ public class SignupRequest {
     private String fullname;
 
     @NotBlank
-    @Size(min = 11, max = 11)
+    @Size(min = 11, max = 11, message = "phone must be 11 digit")
     private String phone;
 
     @NotBlank
     @Email
     private String email;
 
-    @NotBlank
+    @NotNull
     private Set<String> role;
 
     @NotBlank

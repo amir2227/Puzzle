@@ -3,6 +3,7 @@ package ir.tehranpuzzle.mistery.services;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.List;
 
 import ir.tehranpuzzle.mistery.exception.BadRequestException;
 import ir.tehranpuzzle.mistery.exception.DuplicatException;
@@ -86,6 +87,10 @@ public class UserService {
         return user;
     }
 
+    public List<User> search(){
+        return userRepository.findAll();
+    }
+
     public User Edit(Long user_id, EditUserRequest request) {
         User user = this.get(user_id);
         if (request.getPassword() != null) {
@@ -120,5 +125,18 @@ public class UserService {
         }
         return userRepository.save(user);
     }
+
+    public String delete(Long id){
+
+        User user = this.get(id);
+        try {
+            userRepository.delete(user);
+            return "successfully deleted";
+        } catch (Exception e) {
+            // TODO: handle exception
+            return "cannot be deleted!";
+        }
+    }
+
 
 }

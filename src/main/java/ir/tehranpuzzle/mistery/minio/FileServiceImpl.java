@@ -11,7 +11,6 @@ import io.minio.errors.InvalidResponseException;
 import io.minio.errors.ServerException;
 import io.minio.errors.XmlParserException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +49,6 @@ public class FileServiceImpl implements FileService {
     
     private final String IMAGE_MEDIA_TYPE = "image";
 
-    @SneakyThrows
     @Override
     public byte[] getFile(String fileName, String folder) {
         String objectName = folder + fileName;
@@ -68,7 +66,6 @@ public class FileServiceImpl implements FileService {
         return stream;
     }
     
-    @SneakyThrows
     @Override
     public String uploadImage(MultipartFile file, String folder, boolean isResize) throws IOException {
         String fileExtension = fileUtil.getFileExtensionIfAcceptable(file, IMAGE_MEDIA_TYPE);
@@ -103,13 +100,11 @@ public class FileServiceImpl implements FileService {
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                 | InvalidResponseException | NoSuchAlgorithmException | ServerException | XmlParserException
                 | IllegalArgumentException e) {
-            // TODO Auto-generated catch block
             throw new BadRequestException(e.getMessage());
         }
         return fileName;
     }
 
-    @SneakyThrows
     @Override
     public void deleteFile(String fileName, String folder) {
         String objectName = folder + fileName;
@@ -118,12 +113,10 @@ public class FileServiceImpl implements FileService {
         } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
                 | InvalidResponseException | NoSuchAlgorithmException | ServerException | XmlParserException
                 | IllegalArgumentException | IOException e) {
-            // TODO Auto-generated catch block
             throw new BadRequestException(e.getMessage());
         }
     }
 
-    @SneakyThrows
     public String uploadInputStreamImage(InputStream file, String folder) {
         String fileName = fileUtil.generateUniqueName(fileUtil.getFileExtensionFromInputStream(file));
         String fileExtension = fileUtil.getFileExtensionIfAcceptable(fileName, IMAGE_MEDIA_TYPE);

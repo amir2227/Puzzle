@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,16 +21,19 @@ import io.swagger.annotations.ApiOperation;
 import ir.tehranpuzzle.mistery.exception.handleValidationExceptions;
 import ir.tehranpuzzle.mistery.models.Puzzle;
 import ir.tehranpuzzle.mistery.models.Shop;
+import ir.tehranpuzzle.mistery.models.Tips;
 import ir.tehranpuzzle.mistery.payload.request.PuzzleRequest;
 import ir.tehranpuzzle.mistery.payload.request.ShopRequest;
+import ir.tehranpuzzle.mistery.payload.request.TipsRequest;
 import ir.tehranpuzzle.mistery.security.service.UserDetailsImpl;
 import ir.tehranpuzzle.mistery.services.PuzzleService;
 import ir.tehranpuzzle.mistery.services.ShopService;
+import ir.tehranpuzzle.mistery.services.TipsService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/shop")
-public class ShopOwnerController extends handleValidationExceptions {
+public class ShopController extends handleValidationExceptions {
 
     @Autowired
     private ShopService shopService;
@@ -37,7 +41,11 @@ public class ShopOwnerController extends handleValidationExceptions {
     @Autowired
     private PuzzleService puzzleService;
 
-    @ApiOperation(value = "create shop")
+    @Autowired
+    private TipsService tipsService;
+
+    @ApiOperation(value = "create shop only 'SHOP_OWNER', 'ADMIN' role")
+    @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> create(@Valid @ModelAttribute ShopRequest request) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
@@ -46,7 +54,8 @@ public class ShopOwnerController extends handleValidationExceptions {
         return ResponseEntity.ok(result);
     }
 
-    @ApiOperation(value = "edit shop")
+    @ApiOperation(value = "edit shop only 'SHOP_OWNER', 'ADMIN' role")
+    @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
     @PatchMapping(value = "/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> edit(@PathVariable("id") Long id, @Valid @ModelAttribute ShopRequest request) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
@@ -55,9 +64,17 @@ public class ShopOwnerController extends handleValidationExceptions {
         return ResponseEntity.ok(result);
     }
 
-    @ApiOperation(value = "get all user shops")
+    @ApiOperation(value = "get all shops")
     @GetMapping("")
-    public ResponseEntity<?> search() {
+    public ResponseEntity<?> searchShops() {
+
+        return ResponseEntity.ok(shopService.getAllShops());
+    }
+
+    @ApiOperation(value = "get all user shops only 'SHOP_OWNER', 'ADMIN' role")
+    @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
+    @GetMapping("/user")
+    public ResponseEntity<?> searchUserShops() {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         return ResponseEntity.ok(shopService.search(userDetails.getId()));
@@ -69,7 +86,8 @@ public class ShopOwnerController extends handleValidationExceptions {
         return ResponseEntity.ok().body(shopService.get(id));
     }
 
-    @ApiOperation(value = "delete one shop ")
+    @ApiOperation(value = "delete one shop only 'SHOP_OWNER', 'ADMIN' role")
+    @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
@@ -84,7 +102,9 @@ public class ShopOwnerController extends handleValidationExceptions {
                 .body(shopService.getImage(id));
     }
 
-    @ApiOperation(value = "create puzzle")
+    // ------------------- puzzle controller ----------
+    @ApiOperation(value = "create puzzle only 'SHOP_OWNER', 'ADMIN' role")
+    @PreAuthorize("hasAnyAuthority('SHOP_OWNER','ADMIN')")
     @PostMapping(value = "/{shop_id}/puzzle", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> createPuzzle(@PathVariable("shop_id") Long shop_id,
             @Valid @ModelAttribute PuzzleRequest request) {
@@ -94,7 +114,8 @@ public class ShopOwnerController extends handleValidationExceptions {
         return ResponseEntity.ok(result);
     }
 
-    @ApiOperation(value = "edit shop puzzle")
+    @ApiOperation(value = "edit shop puzzle only 'SHOP_OWNER', 'ADMIN' role")
+    @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
     @PatchMapping(value = "/{shop_id}/puzzle/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> editPuzzle(@PathVariable("shop_id") Long shop_id,
             @PathVariable("id") Long id, @Valid @ModelAttribute PuzzleRequest request) {
@@ -123,11 +144,65 @@ public class ShopOwnerController extends handleValidationExceptions {
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
                 .body(puzzleService.getImage(id));
     }
-    @ApiOperation(value = "delete one puzzle ")
+
+    @ApiOperation(value = "delete one puzzle only 'SHOP_OWNER', 'ADMIN' role")
+    @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
     @DeleteMapping("/puzzle/{id}")
     public ResponseEntity<?> deletePuzzle(@PathVariable("id") Long id) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         return ResponseEntity.ok().body(puzzleService.delete(id, userDetails.getId()));
+    }
+
+    // ------------------- tips controller ----------
+    @ApiOperation(value = "create tips only 'SHOP_OWNER', 'ADMIN' role")
+    @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
+    @PostMapping(value = "/puzzle/{puzzle_id}/tips", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> createTips(@PathVariable("puzzle_id") Long puzzle_id,
+            @Valid @ModelAttribute TipsRequest request) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        Tips result = tipsService.create(request, puzzle_id, userDetails.getId());
+        return ResponseEntity.ok(result);
+    }
+
+    @ApiOperation(value = "edit shop puzzle only 'SHOP_OWNER', 'ADMIN' role")
+    @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
+    @PatchMapping(value = "/puzzle/{puzzle_id}/tips/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> editTips(@PathVariable("puzzle_id") Long puzzle_id,
+            @PathVariable("id") Long id, @Valid @ModelAttribute TipsRequest request) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        Tips result = tipsService.Edit(id, request, puzzle_id, userDetails.getId());
+        return ResponseEntity.ok(result);
+    }
+
+    @ApiOperation(value = "get all puzzle tips")
+    @GetMapping("/puzzle/{puzzle_id}/tips")
+    public ResponseEntity<?> searchTips(@PathVariable("puzzle_id") Long puzzle_id) {
+
+        return ResponseEntity.ok(tipsService.search(puzzle_id));
+    }
+
+    @ApiOperation(value = "get one tip ")
+    @GetMapping("/puzzle/tips/{id}")
+    public ResponseEntity<?> getTips(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(tipsService.get(id));
+    }
+
+    @ApiOperation(value = "get one tip image")
+    @GetMapping("puzzle/tips/{id}/image")
+    public ResponseEntity<?> getTipsimage(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
+                .body(tipsService.getImage(id));
+    }
+
+    @ApiOperation(value = "delete one tips only 'SHOP_OWNER', 'ADMIN' role")
+    @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
+    @DeleteMapping("/puzzle/tips/{id}")
+    public ResponseEntity<?> deleteTips(@PathVariable("id") Long id) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        return ResponseEntity.ok().body(tipsService.delete(id, userDetails.getId()));
     }
 }

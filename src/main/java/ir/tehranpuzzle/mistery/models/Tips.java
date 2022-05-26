@@ -13,9 +13,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "Tips")
-@JsonIgnoreProperties({"puzzle"})
+@JsonIgnoreProperties({ "puzzle", "img" })
 public class Tips {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,9 +25,9 @@ public class Tips {
 
     @Column(length = 60)
     private String img;
-    
+
     @Column
-    private Boolean state;
+    private Boolean state; // Lock or unlock
 
     @ManyToOne
     @JoinColumn(name = "puzzle_id")
@@ -36,10 +36,10 @@ public class Tips {
     public Tips() {
     }
 
-    public Tips(String text, String img, Boolean state) {
+    public Tips(String text, Boolean state, Puzzle puzzle) {
         this.text = text;
-        this.img = img;
         this.state = state;
+        this.puzzle = puzzle;
     }
 
     public Long getId() {
@@ -81,6 +81,5 @@ public class Tips {
     public void setPuzzle(Puzzle puzzle) {
         this.puzzle = puzzle;
     }
-
 
 }
