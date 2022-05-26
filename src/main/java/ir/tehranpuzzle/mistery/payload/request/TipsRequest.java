@@ -1,7 +1,6 @@
 package ir.tehranpuzzle.mistery.payload.request;
 
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import org.springframework.web.multipart.MultipartFile;

@@ -23,6 +23,7 @@ public class MinioConfig {
         MinioClient minioClient = MinioClient.builder().endpoint(url)
                 .credentials(accessKey, secretKet).build();
         try {
+            System.out.println(url);
             boolean isExist = minioClient.bucketExists(BucketExistsArgs.builder()
                     .bucket(bucket).build());
             if (!isExist) {

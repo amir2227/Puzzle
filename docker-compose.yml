@@ -2,6 +2,7 @@ version: '3'
 services:
   minio:
     image: minio/minio
+    container_name: minio
     restart: unless-stopped
     command: server /data --console-address ":9001"
     ports:
@@ -19,3 +20,46 @@ services:
     image: minio/mc
     depends_on:
       - minio
+  mysqldb:
+    image: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: adminadmin 
+      MYSQL_DATABASE: puzzle
+      MYSQL_USER: amir
+      MYSQL_PASSWORD: nE5kMc7JCGNqwDQM
+    ports:
+        - 3307:3306
+    volumes:
+        - db:/var/lib/mysql
+    networks:
+      - spring-net
+  app:
+    depends_on:
+      - mysqldb
+      - minio
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    ports:
+      - 8181:8081
+    environment:
+      - spring.datasource.url=jdbc:mysql://mysqldb:3306/puzzle
+      - spring.datasource.username=root
+      - spring.datasource.password=adminadmin
+      - minio.url=http://127.0.0.1:9000
+      - minio.bucket=puzzle
+      - minio.access-key=test
+      - minio.secret-key=test1234
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
+    networks:
+      - spring-net
+volumes:
+  db:
+networks:
+  spring-net:
+
