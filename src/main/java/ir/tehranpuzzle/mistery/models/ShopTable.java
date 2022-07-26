@@ -66,6 +66,4 @@ public class ShopTable {
         this.shop = shop;
     }
 
-    
-
 }
