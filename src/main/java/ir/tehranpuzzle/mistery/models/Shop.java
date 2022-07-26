@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -36,6 +37,10 @@ public class Shop {
     @Column(length = 90)
     private String img;
 
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "address_id")
+    private ShopAddress address;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -46,7 +51,7 @@ public class Shop {
     public Shop() {
     }
 
-    public Shop(String name, String type,String description, User user) {
+    public Shop(String name, String type, String description, User user) {
         this.name = name;
         this.type = type;
         this.description = description;
@@ -107,6 +112,14 @@ public class Shop {
 
     public void setPuzzles(List<Puzzle> puzzles) {
         this.puzzles = puzzles;
+    }
+
+    public ShopAddress getAddress() {
+        return address;
+    }
+
+    public void setAddress(ShopAddress address) {
+        this.address = address;
     }
 
 }

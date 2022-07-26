@@ -1,7 +1,6 @@
 package ir.tehranpuzzle.mistery.minio;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +17,6 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.Date;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileUtil {
