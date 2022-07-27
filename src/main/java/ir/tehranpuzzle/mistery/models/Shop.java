@@ -45,8 +45,10 @@ public class Shop {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "shop", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "shop")
     private List<Puzzle> puzzles;
+    @OneToMany(mappedBy = "shop")
+    private List<ShopCard> shopCards;
 
     public Shop() {
     }

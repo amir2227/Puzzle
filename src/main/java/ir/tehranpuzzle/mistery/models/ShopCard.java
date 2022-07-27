@@ -2,6 +2,7 @@ package ir.tehranpuzzle.mistery.models;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "shop_card")
@@ -32,15 +35,18 @@ public class ShopCard {
     private Integer rating;
     @Column
     private Long orderCount;
-    @Column(length = 16)
+    @Column(length = 16, nullable = true)
     private String category;
-    @Column(length = 16)
+    @Column(length = 16, nullable = true)
     private String tag;
     @Column
     private Integer discount;
+    @Column
+    private Integer viewCount;
+    @JsonIgnore
     @OneToMany(mappedBy = "shopCard")
     private List<ShopOrderCard> shopOrderCards;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
@@ -48,7 +54,7 @@ public class ShopCard {
     }
 
     public ShopCard(String title, String description, Float price, EUnit unit, Integer total, Integer rating,
-            Long orderCount, String category, String tag, Integer discount, Shop shop) {
+            Long orderCount, String category, String tag, Integer discount, Integer viewCount, Shop shop) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -58,8 +64,25 @@ public class ShopCard {
         this.orderCount = orderCount;
         this.category = category;
         this.tag = tag;
-        this.discount = discount;
+        this.discount = discount != null ? discount : 0;
+        this.viewCount = viewCount;
         this.shop = shop;
+    }
+
+    public Integer getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public List<ShopOrderCard> getShopOrderCards() {
+        return shopOrderCards;
+    }
+
+    public void setShopOrderCards(List<ShopOrderCard> shopOrderCards) {
+        this.shopOrderCards = shopOrderCards;
     }
 
     public String getTitle() {

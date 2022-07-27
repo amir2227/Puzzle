@@ -33,11 +33,11 @@ public class Puzzle {
     @Column(length = 60)
     private String answer;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
-    @OneToMany(mappedBy = "puzzle", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "puzzle")
     private List<Tips> tips;
 
     public Puzzle() {

@@ -1,5 +1,6 @@
 package ir.tehranpuzzle.mistery.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,7 +30,7 @@ public class Tips {
     @Column
     private Boolean state; // Lock or unlock
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "puzzle_id")
     private Puzzle puzzle;
 

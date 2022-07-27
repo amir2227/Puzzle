@@ -22,47 +22,57 @@ public class ShopOrderCard {
     @JoinColumn(name = "order_id")
     private ShopOrder shopOrder;
     @Column
-    private Integer gty;
+    private Integer gty; // tedad sefaresh az yek mahsool
     @Column
     private Float productPrice;
+
     public ShopOrderCard() {
     }
-    public ShopOrderCard(ShopCard shopCard, ShopOrder shopOrder, Integer gty, Float productPrice) {
+
+    public ShopOrderCard(ShopCard shopCard, Integer gty, Float productPrice) {
         this.shopCard = shopCard;
-        this.shopOrder = shopOrder;
         this.gty = gty;
         this.productPrice = productPrice;
     }
+
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public ShopCard getShopCard() {
         return shopCard;
     }
+
     public void setShopCard(ShopCard shopCard) {
         this.shopCard = shopCard;
     }
+
     public ShopOrder getShopOrder() {
         return shopOrder;
     }
+
     public void setShopOrder(ShopOrder shopOrder) {
         this.shopOrder = shopOrder;
     }
+
     public Integer getGty() {
         return gty;
     }
+
     public void setGty(Integer gty) {
         this.gty = gty;
     }
+
     public Float getProductPrice() {
         return productPrice;
     }
+
     public void setProductPrice(Float productPrice) {
         this.productPrice = productPrice;
     }
 
-    
 }
