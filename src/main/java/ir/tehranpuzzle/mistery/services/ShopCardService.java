@@ -14,92 +14,84 @@ import ir.tehranpuzzle.mistery.exception.BadRequestException;
 import ir.tehranpuzzle.mistery.exception.NotFoundException;
 import ir.tehranpuzzle.mistery.minio.FileServiceImpl;
 import ir.tehranpuzzle.mistery.models.Shop;
-import ir.tehranpuzzle.mistery.models.ShopAddress;
-import ir.tehranpuzzle.mistery.models.User;
-import ir.tehranpuzzle.mistery.payload.request.ShopRequest;
-import ir.tehranpuzzle.mistery.repositorys.ShopAddressRepository;
-import ir.tehranpuzzle.mistery.repositorys.ShopRepository;
+import ir.tehranpuzzle.mistery.models.ShopCard;
+import ir.tehranpuzzle.mistery.payload.request.CardRequest;
+import ir.tehranpuzzle.mistery.repositorys.ShopCardRepository;
 
 @Service
-public class ShopService {
-
+public class ShopCardService {
     @Autowired
-    private ShopRepository shopRepository;
-
+    private ShopCardRepository shopCardRepo;
     @Autowired
-    private ShopAddressRepository addressRepository;
-
-    @Autowired
-    private UserService userService;
-
+    private ShopService shopService;
     @Autowired
     private FileServiceImpl fileServiceImpl;
-
     @Value("${minio.image-folder}")
     private String imageFolder;
 
-    public Shop create(ShopRequest request, Long user_id) {
-        User user = userService.get(user_id);
-        Shop shop = new Shop(request.getName(), request.getType(), request.getDescription(), user);
-        ShopAddress address = new ShopAddress(
-                request.getAddress().getAddress(),
-                request.getAddress().getLatitude(),
-                request.getAddress().getLongitude());
-        shop.setAddress(addressRepository.save(address));
-        if (request.getImg().getContentType() != null) {
+    public ShopCard create(CardRequest dto, Long shop_id) {
+        Shop shop = shopService.get(shop_id);
+        ShopCard shopCard = new ShopCard(dto.getTitle(), dto.getDescription(),
+                dto.getPrice(), dto.getUnit(), dto.getTotal(), dto.getCategory(),
+                dto.getTag(), dto.getDiscount(), shop);
+        if (dto.getImg().getContentType() != null) {
             try {
-                String fileName = fileServiceImpl.uploadImage(request.getImg(), imageFolder, true);
-                shop.setImg(fileName);
+                String fileName = fileServiceImpl.uploadImage(dto.getImg(), imageFolder, true);
+                shopCard.setImg(fileName);
             } catch (IOException e) {
                 throw new BadRequestException("upload image exception");
             }
         }
-        return shopRepository.save(shop);
+        return shopCardRepo.save(shopCard);
     }
 
-    public Shop get(Long id) {
-        Shop shop = shopRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Shop Not Found with id" + id));
-        return shop;
+    public ShopCard get(Long id) {
+        ShopCard shopCard = shopCardRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Shop card Not Found with id" + id));
+        return shopCard;
     }
 
     public Map<String, Object> search(Long id) {
         Map<String, Object> shoplist = new HashMap<>();
-        List<Shop> shops = shopRepository.findByUser_id(id);
-        shoplist.put("shops", shops);
+        List<ShopCard> shopCards = shopCardRepo.findByShop_id(id);
+        shoplist.put("shopCards", shopCards);
         return shoplist;
     }
 
-    public List<Shop> getAllShops() {
-        return shopRepository.findAll();
+    public List<ShopCard> getAllShops() {
+        return shopCardRepo.findAll();
     }
 
     public byte[] getImage(Long id) {
-        Shop s = this.get(id);
+        ShopCard s = this.get(id);
         return fileServiceImpl.getFile(s.getImg(), imageFolder);
     }
 
     @Transactional
-    public Shop Edit(Long id, ShopRequest request, Long user_id) {
-        Shop shop = this.get(id);
-        if (shop.getUser().getId() != user_id)
+    public ShopCard Edit(Long id, CardRequest request, Long shop_id) {
+        ShopCard shopCard = this.get(id);
+        if (shopCard.getShop().getId() != shop_id)
             throw new BadRequestException("Access denied");
         if (request.getDescription() != null)
-            shop.setDescription(request.getDescription());
-        if (request.getName() != null)
-            shop.setName(request.getName());
-        if (request.getType() != null)
-            shop.setType(request.getType());
+            shopCard.setDescription(request.getDescription());
+        if (request.getTitle() != null)
+            shopCard.setTitle(request.getTitle());
+        if (request.getCategory() != null)
+            shopCard.setCategory(request.getCategory());
+        if (request.getDiscount() != null)
+            shopCard.setDiscount(request.getDiscount());
+        if (request.getPrice() != null)
+            shopCard.setPrice(request.getPrice());
         if (request.getImg() != null) {
-            deleteFile(shop.getImg(), imageFolder);
+            deleteFile(shopCard.getImg(), imageFolder);
             try {
                 String fileName = fileServiceImpl.uploadImage(request.getImg(), imageFolder, true);
-                shop.setImg(fileName);
+                shopCard.setImg(fileName);
             } catch (IOException e) {
                 throw new BadRequestException("upload image exception");
             }
         }
-        return shopRepository.save(shop);
+        return shopCardRepo.save(shopCard);
     }
 
     @Transactional
@@ -124,4 +116,5 @@ public class ShopService {
             return "cannot be deleted!";
         }
     }
+
 }

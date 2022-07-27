@@ -17,10 +17,10 @@ public class ShopOrderCard {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "card_id")
-    private ShopCard shopCard;
+    private ShopCard card;
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private ShopOrder shopOrder;
+    private ShopOrder order;
     @Column
     private Integer gty; // tedad sefaresh az yek mahsool
     @Column
@@ -30,7 +30,7 @@ public class ShopOrderCard {
     }
 
     public ShopOrderCard(ShopCard shopCard, Integer gty, Float productPrice) {
-        this.shopCard = shopCard;
+        this.card = shopCard;
         this.gty = gty;
         this.productPrice = productPrice;
     }
@@ -44,19 +44,19 @@ public class ShopOrderCard {
     }
 
     public ShopCard getShopCard() {
-        return shopCard;
+        return card;
     }
 
     public void setShopCard(ShopCard shopCard) {
-        this.shopCard = shopCard;
+        this.card = shopCard;
     }
 
     public ShopOrder getShopOrder() {
-        return shopOrder;
+        return order;
     }
 
     public void setShopOrder(ShopOrder shopOrder) {
-        this.shopOrder = shopOrder;
+        this.order = shopOrder;
     }
 
     public Integer getGty() {

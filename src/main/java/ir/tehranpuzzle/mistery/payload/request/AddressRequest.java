@@ -1,7 +1,5 @@
 package ir.tehranpuzzle.mistery.payload.request;
 
-import javax.validation.constraints.NotBlank;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,10 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LoginRequest {
-    @NotBlank
-    private String username;
-    @NotBlank
-    private String password;
-
+public class AddressRequest {
+    private String address;
+    private Long latitude;
+    private Long longitude;
 }

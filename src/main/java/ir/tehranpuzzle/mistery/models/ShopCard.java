@@ -31,6 +31,8 @@ public class ShopCard {
     private EUnit unit;
     @Column
     private Integer total;
+    @Column(length = 90)
+    private String img;
     @Column
     private Integer rating;
     @Column
@@ -44,7 +46,7 @@ public class ShopCard {
     @Column
     private Integer viewCount;
     @JsonIgnore
-    @OneToMany(mappedBy = "shopCard")
+    @OneToMany(mappedBy = "card")
     private List<ShopOrderCard> shopOrderCards;
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "shop_id")
@@ -53,19 +55,16 @@ public class ShopCard {
     public ShopCard() {
     }
 
-    public ShopCard(String title, String description, Float price, EUnit unit, Integer total, Integer rating,
-            Long orderCount, String category, String tag, Integer discount, Integer viewCount, Shop shop) {
+    public ShopCard(String title, String description, Float price, EUnit unit, Integer total,
+            String category, String tag, Integer discount, Shop shop) {
         this.title = title;
         this.description = description;
         this.price = price;
         this.unit = unit;
         this.total = total;
-        this.rating = rating;
-        this.orderCount = orderCount;
         this.category = category;
         this.tag = tag;
         this.discount = discount != null ? discount : 0;
-        this.viewCount = viewCount;
         this.shop = shop;
     }
 
@@ -179,6 +178,14 @@ public class ShopCard {
 
     public void setDiscount(Integer discount) {
         this.discount = discount;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 
 }

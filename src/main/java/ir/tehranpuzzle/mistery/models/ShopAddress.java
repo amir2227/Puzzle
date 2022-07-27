@@ -30,11 +30,10 @@ public class ShopAddress {
     public ShopAddress() {
     }
 
-    public ShopAddress(String address, Long latitude, Long longitude, Shop shop) {
+    public ShopAddress(String address, Long latitude, Long longitude) {
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.shop = shop;
     }
 
     public Long getId() {
