@@ -19,76 +19,63 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import ir.tehranpuzzle.mistery.exception.handleValidationExceptions;
-import ir.tehranpuzzle.mistery.models.Shop;
-import ir.tehranpuzzle.mistery.payload.request.ShopRequest;
+import ir.tehranpuzzle.mistery.models.ShopCard;
+import ir.tehranpuzzle.mistery.payload.request.CardRequest;
 import ir.tehranpuzzle.mistery.security.service.UserDetailsImpl;
-import ir.tehranpuzzle.mistery.services.ShopService;
+import ir.tehranpuzzle.mistery.services.ShopCardService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/shop")
-public class ShopController extends handleValidationExceptions {
+public class ShopCardController extends handleValidationExceptions {
 
     @Autowired
-    private ShopService shopService;
-  
+    private ShopCardService shopCardService;
 
-    @ApiOperation(value = "create shop only 'SHOP_OWNER', 'ADMIN' role")
+    @ApiOperation(value = "create shop card only 'SHOP_OWNER', 'ADMIN' role")
     @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
-    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> create(@Valid @ModelAttribute ShopRequest request) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        Shop result = shopService.create(request, userDetails.getId());
+    @PostMapping(value = "/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> create(@PathVariable("id") Long id, @Valid @ModelAttribute CardRequest request) {
+        ShopCard result = shopCardService.create(request, id);
         return ResponseEntity.ok(result);
     }
 
     @ApiOperation(value = "edit shop only 'SHOP_OWNER', 'ADMIN' role")
     @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
-    @PatchMapping(value = "/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> edit(@PathVariable("id") Long id, @Valid @ModelAttribute ShopRequest request) {
+    @PatchMapping(value = "/card/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> edit(@PathVariable("id") Long id,
+            @Valid @ModelAttribute CardRequest request) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        Shop result = shopService.Edit(id, request, userDetails.getId());
+        ShopCard result = shopCardService.Edit(id, request, userDetails.getId());
         return ResponseEntity.ok(result);
     }
 
-    @ApiOperation(value = "get all shops")
-    @GetMapping("")
-    public ResponseEntity<?> searchShops() {
-
-        return ResponseEntity.ok(shopService.getAllShops());
+    @ApiOperation(value = "get all shop cards ")
+    @GetMapping("{id}/card")
+    public ResponseEntity<?> searchUserShops(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(shopCardService.search(id));
     }
 
-    @ApiOperation(value = "get all user shops only 'SHOP_OWNER', 'ADMIN' role")
-    @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
-    @GetMapping("/user")
-    public ResponseEntity<?> searchUserShops() {
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        return ResponseEntity.ok(shopService.search(userDetails.getId()));
-    }
-
-    @ApiOperation(value = "get one shop ")
-    @GetMapping("/{id}")
+    @ApiOperation(value = "get one shop card")
+    @GetMapping("/card/{id}")
     public ResponseEntity<?> get(@PathVariable("id") Long id) {
-        return ResponseEntity.ok().body(shopService.get(id));
+        return ResponseEntity.ok().body(shopCardService.get(id));
     }
 
-    @ApiOperation(value = "delete one shop only 'SHOP_OWNER', 'ADMIN' role")
+    @ApiOperation(value = "delete one shop card only 'SHOP_OWNER', 'ADMIN' role")
     @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/card/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        return ResponseEntity.ok().body(shopService.delete(id, userDetails.getId()));
+        return ResponseEntity.ok().body(shopCardService.delete(id, userDetails.getId()));
     }
 
-    @ApiOperation(value = "get one shop image")
-    @GetMapping("/{id}/image")
+    @ApiOperation(value = "get one shop card image")
+    @GetMapping("/card/{id}/image")
     public ResponseEntity<?> getimage(@PathVariable("id") Long id) {
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
-                .body(shopService.getImage(id));
+                .body(shopCardService.getImage(id));
     }
-
-  }
+}

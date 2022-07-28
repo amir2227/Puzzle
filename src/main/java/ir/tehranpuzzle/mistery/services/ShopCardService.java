@@ -51,15 +51,11 @@ public class ShopCardService {
         return shopCard;
     }
 
-    public Map<String, Object> search(Long id) {
+    public Map<String, Object> search(Long shop_id) {
         Map<String, Object> shoplist = new HashMap<>();
-        List<ShopCard> shopCards = shopCardRepo.findByShop_id(id);
+        List<ShopCard> shopCards = shopCardRepo.findByShop_id(shop_id);
         shoplist.put("shopCards", shopCards);
         return shoplist;
-    }
-
-    public List<ShopCard> getAllShops() {
-        return shopCardRepo.findAll();
     }
 
     public byte[] getImage(Long id) {
@@ -68,10 +64,10 @@ public class ShopCardService {
     }
 
     @Transactional
-    public ShopCard Edit(Long id, CardRequest request, Long shop_id) {
+    public ShopCard Edit(Long id, CardRequest request, Long user_id) {
         ShopCard shopCard = this.get(id);
-        if (shopCard.getShop().getId() != shop_id)
-            throw new BadRequestException("Access denied");
+        if (shopCard.getShop().getUser().getId() != user_id)
+            throw new BadRequestException("Access denied!");
         if (request.getDescription() != null)
             shopCard.setDescription(request.getDescription());
         if (request.getTitle() != null)
@@ -82,6 +78,12 @@ public class ShopCardService {
             shopCard.setDiscount(request.getDiscount());
         if (request.getPrice() != null)
             shopCard.setPrice(request.getPrice());
+        if (request.getTag() != null)
+            shopCard.setTag(request.getTag());
+        if (request.getTotal() != null)
+            shopCard.setTotal(request.getTotal());
+        if (request.getUnit() != null)
+            shopCard.setUnit(request.getUnit());
         if (request.getImg() != null) {
             deleteFile(shopCard.getImg(), imageFolder);
             try {
@@ -103,12 +105,12 @@ public class ShopCardService {
 
     public String delete(Long id, Long user_id) {
 
-        Shop shop = this.get(id);
-        String filename = shop.getImg();
-        if (shop.getUser().getId() != user_id)
-            throw new BadRequestException("access denied");
+        ShopCard shopCard = this.get(id);
+        String filename = shopCard.getImg();
+        if (shopCard.getShop().getUser().getId() != user_id)
+            throw new BadRequestException("access denied!");
         try {
-            shopRepository.delete(shop);
+            shopCardRepo.delete(shopCard);
             this.deleteFile(filename, imageFolder);
             return "successfully deleted";
         } catch (Exception e) {
