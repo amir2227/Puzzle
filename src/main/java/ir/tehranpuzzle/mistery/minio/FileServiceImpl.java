@@ -102,7 +102,22 @@ public class FileServiceImpl implements FileService {
         }
         return fileName;
     }
+    public String uploadImg(InputStream inputStream,String folder){
+        String fileName = fileUtil.generateUniqueName("jpg");
+        String objectName = folder + fileName;
 
+        try {
+            minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(
+                    inputStream, inputStream.available(), -1)
+                    .contentType("image/jpg")
+                    .build());
+        } catch (InvalidKeyException | ErrorResponseException | InsufficientDataException | InternalException
+                | InvalidResponseException | NoSuchAlgorithmException | ServerException | XmlParserException
+                | IllegalArgumentException | IOException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+        return fileName;
+    }
     @Override
     public void deleteFile(String fileName, String folder) {
         String objectName = folder + fileName;

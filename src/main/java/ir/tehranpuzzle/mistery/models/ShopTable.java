@@ -10,7 +10,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.apache.tomcat.jni.File;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import ir.tehranpuzzle.mistery.minio.FileServiceImpl;
 
 @Entity
 @Table(name = "shop_table")
@@ -19,24 +24,23 @@ public class ShopTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 128)
-    private String name;
-    @Column
-    private Integer number;
+    private String title;
+
     @Column(length = 512)
     private String qrcode;
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "shop_id")
+    @JoinColumn(name = "table_shop_id")
     private Shop shop;
 
     public ShopTable() {
     }
 
-    public ShopTable(String name, Integer number, String qrcode, Shop shop) {
-        this.name = name;
-        this.number = number;
-        this.qrcode = qrcode;
+    public ShopTable(String title, String qrcode, Shop shop) {
+        this.title = title;
         this.shop = shop;
+        this.qrcode = qrcode;
+
     }
 
     public Long getId() {
@@ -47,20 +51,12 @@ public class ShopTable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getNumber() {
-        return number;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getQrcode() {

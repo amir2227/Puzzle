@@ -1,6 +1,7 @@
 package ir.tehranpuzzle.mistery.models;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "shop")
-@JsonIgnoreProperties({ "user", "img" })
+@JsonIgnoreProperties({ "user", "img", "shopCards", "puzzles" })
 public class Shop {
 
     @Id
@@ -34,6 +35,9 @@ public class Shop {
     @Column
     private String description;
 
+    @Column
+    private UUID uuid;
+
     @Column(length = 90)
     private String img;
 
@@ -45,10 +49,12 @@ public class Shop {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "shop")
+    @OneToMany(mappedBy = "shop", cascade = { CascadeType.ALL })
     private List<Puzzle> puzzles;
-    @OneToMany(mappedBy = "shop")
+    @OneToMany(mappedBy = "shop", cascade = { CascadeType.ALL })
     private List<ShopCard> shopCards;
+    @OneToMany(mappedBy = "shop", cascade = { CascadeType.ALL })
+    private List<ShopTable> shopTables;
 
     public Shop() {
     }
@@ -58,6 +64,7 @@ public class Shop {
         this.type = type;
         this.description = description;
         this.user = user;
+        this.uuid = UUID.randomUUID();
     }
 
     public Long getId() {
@@ -122,6 +129,30 @@ public class Shop {
 
     public void setAddress(ShopAddress address) {
         this.address = address;
+    }
+
+    public List<ShopCard> getShopCards() {
+        return shopCards;
+    }
+
+    public void setShopCards(List<ShopCard> shopCards) {
+        this.shopCards = shopCards;
+    }
+
+    public List<ShopTable> getShopTables() {
+        return shopTables;
+    }
+
+    public void setShopTables(List<ShopTable> shopTables) {
+        this.shopTables = shopTables;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
 }

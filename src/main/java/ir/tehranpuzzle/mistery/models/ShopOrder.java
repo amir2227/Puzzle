@@ -3,6 +3,7 @@ package ir.tehranpuzzle.mistery.models;
 import java.sql.Date;
 import java.util.List;
 
+import javax.faces.view.facelets.Facelet;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,7 +23,7 @@ public class ShopOrder {
     @OneToMany(mappedBy = "order")
     private List<ShopOrderCard> ShopOrderCard;
     @ManyToOne
-    @JoinColumn(name = "shopTable_id")
+    @JoinColumn(name = "shopTable_id", nullable = false)
     private ShopTable shopTable;
     @Column
     private Float totalprice;

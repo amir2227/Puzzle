@@ -15,7 +15,7 @@ import ir.tehranpuzzle.mistery.exception.NotFoundException;
 import ir.tehranpuzzle.mistery.minio.FileServiceImpl;
 import ir.tehranpuzzle.mistery.models.Shop;
 import ir.tehranpuzzle.mistery.models.ShopCard;
-import ir.tehranpuzzle.mistery.payload.request.CardRequest;
+import ir.tehranpuzzle.mistery.payload.request.shop.CardRequest;
 import ir.tehranpuzzle.mistery.repositorys.ShopCardRepository;
 
 @Service

@@ -1,4 +1,4 @@
-package ir.tehranpuzzle.mistery.payload.request;
+package ir.tehranpuzzle.mistery.payload.request.shop;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

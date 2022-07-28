@@ -15,7 +15,7 @@ import ir.tehranpuzzle.mistery.exception.NotFoundException;
 import ir.tehranpuzzle.mistery.minio.FileServiceImpl;
 import ir.tehranpuzzle.mistery.models.Puzzle;
 import ir.tehranpuzzle.mistery.models.Tips;
-import ir.tehranpuzzle.mistery.payload.request.TipsRequest;
+import ir.tehranpuzzle.mistery.payload.request.shop.TipsRequest;
 import ir.tehranpuzzle.mistery.repositorys.TipsRepository;
 
 @Service

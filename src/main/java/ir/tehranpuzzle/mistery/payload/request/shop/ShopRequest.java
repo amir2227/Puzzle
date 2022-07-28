@@ -1,4 +1,6 @@
-package ir.tehranpuzzle.mistery.payload.request;
+package ir.tehranpuzzle.mistery.payload.request.shop;
+
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -19,6 +21,7 @@ public class ShopRequest {
     @NotBlank
     @Size(min = 2, max = 30)
     private String type;
+    private List<String> tables;
     private String description;
     private MultipartFile img;
     private AddressRequest address;

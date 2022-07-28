@@ -1,4 +1,4 @@
-package ir.tehranpuzzle.mistery.payload.request;
+package ir.tehranpuzzle.mistery.payload.request.shop;
 
 import javax.validation.constraints.Size;
 
@@ -11,10 +11,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TipsRequest {
-
-    @Size(max = 300)
+public class PuzzleRequest {
+    @Size(max = 600)
     private String text;
-    private Boolean state;
+    @Size(max = 60)
+    private String answer;
     private MultipartFile img;
 }

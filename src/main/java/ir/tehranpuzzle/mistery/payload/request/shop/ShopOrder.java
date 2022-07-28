@@ -1,4 +1,4 @@
-package ir.tehranpuzzle.mistery.payload.request;
+package ir.tehranpuzzle.mistery.payload.request.shop;
 
 import javax.validation.constraints.NotBlank;
 

@@ -13,10 +13,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "shop_card")
+@JsonIgnoreProperties({"img","shopOrderCards", "shop"})
 public class ShopCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,11 +46,10 @@ public class ShopCard {
     private Integer discount;
     @Column
     private Integer viewCount;
-    @JsonIgnore
-    @OneToMany(mappedBy = "card")
+    @OneToMany(mappedBy = "card", cascade = {CascadeType.ALL})
     private List<ShopOrderCard> shopOrderCards;
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "shop_id")
+    @ManyToOne
+    @JoinColumn(name = "cardshop_id", nullable = false)
     private Shop shop;
 
     public ShopCard() {

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import ir.tehranpuzzle.mistery.exception.handleValidationExceptions;
 import ir.tehranpuzzle.mistery.models.Shop;
-import ir.tehranpuzzle.mistery.payload.request.ShopRequest;
+import ir.tehranpuzzle.mistery.payload.request.shop.ShopRequest;
 import ir.tehranpuzzle.mistery.security.service.UserDetailsImpl;
 import ir.tehranpuzzle.mistery.services.ShopService;
 
@@ -31,7 +31,6 @@ public class ShopController extends handleValidationExceptions {
 
     @Autowired
     private ShopService shopService;
-  
 
     @ApiOperation(value = "create shop only 'SHOP_OWNER', 'ADMIN' role")
     @PreAuthorize("hasAnyAuthority('SHOP_OWNER', 'ADMIN')")
@@ -91,4 +90,11 @@ public class ShopController extends handleValidationExceptions {
                 .body(shopService.getImage(id));
     }
 
-  }
+    @ApiOperation(value = "get shop tables qrcodes")
+    @GetMapping("{id}/table/{table_id}/image")
+    public ResponseEntity<?> gettableQrcodes(@PathVariable("id") Long id,@PathVariable("table_id") Long table_id) {
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
+                .body(shopService.getTableQrcodes(id,table_id));
+    }
+
+}

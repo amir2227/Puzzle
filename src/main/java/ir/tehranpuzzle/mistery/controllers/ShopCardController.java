@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import ir.tehranpuzzle.mistery.exception.handleValidationExceptions;
 import ir.tehranpuzzle.mistery.models.ShopCard;
-import ir.tehranpuzzle.mistery.payload.request.CardRequest;
+import ir.tehranpuzzle.mistery.payload.request.shop.CardRequest;
 import ir.tehranpuzzle.mistery.security.service.UserDetailsImpl;
 import ir.tehranpuzzle.mistery.services.ShopCardService;
 

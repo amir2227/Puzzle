@@ -1,22 +1,29 @@
 package ir.tehranpuzzle.mistery.services;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.hibernate.action.internal.CollectionAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.util.CollectionUtils;
 import ir.tehranpuzzle.mistery.exception.BadRequestException;
 import ir.tehranpuzzle.mistery.exception.NotFoundException;
 import ir.tehranpuzzle.mistery.minio.FileServiceImpl;
 import ir.tehranpuzzle.mistery.models.Shop;
 import ir.tehranpuzzle.mistery.models.ShopAddress;
+import ir.tehranpuzzle.mistery.models.ShopTable;
 import ir.tehranpuzzle.mistery.models.User;
-import ir.tehranpuzzle.mistery.payload.request.ShopRequest;
+import ir.tehranpuzzle.mistery.payload.request.shop.ShopRequest;
 import ir.tehranpuzzle.mistery.repositorys.ShopAddressRepository;
 import ir.tehranpuzzle.mistery.repositorys.ShopRepository;
 
@@ -37,6 +44,20 @@ public class ShopService {
 
     @Value("${minio.image-folder}")
     private String imageFolder;
+    @Value("${minio.qrcode-folder}")
+    private String qrcodeFolder;
+
+    private String GenerateQrcode(String uuid, String tbl_title) {
+        try {
+            InputStream inputStream = QrcodeGenarator
+                    .createQrcodeImage("http://localhost:8081/api/shop/?uuid=" + uuid + "&title=" + tbl_title);
+            String fileName = fileServiceImpl.uploadImg(inputStream, qrcodeFolder);
+            return fileName;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 
     public Shop create(ShopRequest request, Long user_id) {
         User user = userService.get(user_id);
@@ -46,6 +67,10 @@ public class ShopService {
                 request.getAddress().getLatitude(),
                 request.getAddress().getLongitude());
         shop.setAddress(addressRepository.save(address));
+        List<ShopTable> shopTables = request.getTables().stream()
+                .map(x -> new ShopTable(x, GenerateQrcode(shop.getUuid().toString(), x), shop))
+                .collect(Collectors.toList());
+        shop.setShopTables(shopTables);
         if (request.getImg().getContentType() != null) {
             try {
                 String fileName = fileServiceImpl.uploadImage(request.getImg(), imageFolder, true);
@@ -77,6 +102,15 @@ public class ShopService {
     public byte[] getImage(Long id) {
         Shop s = this.get(id);
         return fileServiceImpl.getFile(s.getImg(), imageFolder);
+    }
+
+    public byte[] getTableQrcodes(Long id, Long table_id) {
+        Shop s = this.get(id);
+        List<ShopTable> shopTables = s.getShopTables();
+        Optional<ShopTable> table = shopTables.stream().filter(x -> x.getId() == table_id).findFirst();
+        if (!table.isPresent())
+            throw new NotFoundException(String.format("table whit id %d not found", table_id));
+        return fileServiceImpl.getFile(table.get().getQrcode(), qrcodeFolder);
     }
 
     @Transactional

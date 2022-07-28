@@ -1,6 +1,5 @@
 package ir.tehranpuzzle.mistery.models;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,7 +23,7 @@ public class ShopAddress {
     @Column
     private Long longitude;
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "address")
     private Shop shop;
 
     public ShopAddress() {

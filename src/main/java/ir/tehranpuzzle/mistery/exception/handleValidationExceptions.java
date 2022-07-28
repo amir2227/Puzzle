@@ -41,6 +41,7 @@ public class handleValidationExceptions {
     public Map<String, String> handleBindExceptions(BindException ex) {
         Map<String, String> errors = new HashMap<>();
         errors.put("message", ex.getFieldError().getDefaultMessage());
+        errors.put("field", ex.getFieldError().getField());
         return errors;
     }
 
