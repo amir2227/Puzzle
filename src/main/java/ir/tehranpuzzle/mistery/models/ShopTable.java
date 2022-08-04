@@ -10,12 +10,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.apache.tomcat.jni.File;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import ir.tehranpuzzle.mistery.minio.FileServiceImpl;
 
 @Entity
 @Table(name = "shop_table")

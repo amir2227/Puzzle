@@ -1,9 +1,11 @@
 package ir.tehranpuzzle.mistery.models;
 
-import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
-import javax.faces.view.facelets.Facelet;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,14 +16,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "shop_order")
 public class ShopOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany(mappedBy = "order")
-    private List<ShopOrderCard> ShopOrderCard;
+    @OneToMany(mappedBy = "order", cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+    private List<ShopOrderCard> shopOrderCard;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "shopTable_id", nullable = false)
     private ShopTable shopTable;
@@ -44,28 +49,26 @@ public class ShopOrder {
     public ShopOrder() {
     }
 
-    public ShopOrder(List<ShopOrderCard> shopOrderCard, ShopTable shopTable,
-            String message, Long user_id, ShopDiscount discount) {
-        ShopOrderCard = shopOrderCard;
+    public ShopOrder(List<ShopOrderCard> shopOrderCard, ShopTable shopTable, Float totalPrice, Float totalDiscount,
+            String message) {
+        this.shopOrderCard = shopOrderCard;
         this.shopTable = shopTable;
-        this.discount = discount;
-        for (ShopOrderCard card : shopOrderCard) {
-            this.totalprice += card.getProductPrice() * card.getGty();
-            this.totalDiscount += (card.getShopCard().getDiscount() != null ? card.getShopCard().getDiscount() : 0)
-                    * card.getProductPrice() / 100;
-        }
-        this.totalDiscount += discount.getDiscountAmount() != null && discount.getDiscountPercent() != null
-                ? discount.getDiscountPercent() * this.totalprice / 100 > discount.getDiscountAmount()
-                        ? discount.getDiscountAmount()
-                        : discount.getDiscountPercent() * this.totalprice / 100
-                : discount.getDiscountPercent() != null
-                        ? discount.getDiscountPercent() * this.totalprice / 100
-                        : discount.getDiscountAmount() != null
-                                ? discount.getDiscountAmount()
-                                : 0;
+        this.totalprice = totalPrice;
+        this.totalDiscount = totalDiscount;
+        this.createDate = new Date();
+        // this.totalDiscount += discount.getDiscountAmount() != null &&
+        // discount.getDiscountPercent() != null
+        // ? discount.getDiscountPercent() * this.totalprice / 100 >
+        // discount.getDiscountAmount()
+        // ? discount.getDiscountAmount()
+        // : discount.getDiscountPercent() * this.totalprice / 100
+        // : discount.getDiscountPercent() != null
+        // ? discount.getDiscountPercent() * this.totalprice / 100
+        // : discount.getDiscountAmount() != null
+        // ? discount.getDiscountAmount()
+        // : 0;
         this.finalprice = this.totalprice - this.totalDiscount;
         this.message = message;
-        this.user_id = user_id;
     }
 
     public Long getId() {
@@ -77,11 +80,11 @@ public class ShopOrder {
     }
 
     public List<ShopOrderCard> getShopOrderCard() {
-        return ShopOrderCard;
+        return shopOrderCard;
     }
 
     public void setShopOrderCard(List<ShopOrderCard> shopOrderCard) {
-        ShopOrderCard = shopOrderCard;
+        this.shopOrderCard = shopOrderCard;
     }
 
     public ShopTable getShopTable() {

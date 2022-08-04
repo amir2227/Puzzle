@@ -34,7 +34,7 @@ public class ShopCardService {
         ShopCard shopCard = new ShopCard(dto.getTitle(), dto.getDescription(),
                 dto.getPrice(), dto.getUnit(), dto.getTotal(), dto.getCategory(),
                 dto.getTag(), dto.getDiscount(), shop);
-        if (dto.getImg().getContentType() != null) {
+        if (dto.getImg() != null && dto.getImg().getContentType() != null) {
             try {
                 String fileName = fileServiceImpl.uploadImage(dto.getImg(), imageFolder, true);
                 shopCard.setImg(fileName);

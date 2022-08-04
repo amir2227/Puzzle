@@ -2,7 +2,6 @@ package ir.tehranpuzzle.mistery.services;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +9,10 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.hibernate.action.internal.CollectionAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import ir.tehranpuzzle.mistery.exception.BadRequestException;
 import ir.tehranpuzzle.mistery.exception.NotFoundException;
 import ir.tehranpuzzle.mistery.minio.FileServiceImpl;
@@ -85,6 +82,11 @@ public class ShopService {
     public Shop get(Long id) {
         Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Shop Not Found with id" + id));
+        return shop;
+    }
+    public Shop getByUUID(UUID id) {
+        Shop shop = shopRepository.findByUuid(id)
+                .orElseThrow(() -> new NotFoundException("Shop Not Found with UUID" + id));
         return shop;
     }
 

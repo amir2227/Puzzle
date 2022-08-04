@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -36,6 +38,7 @@ public class Shop {
     private String description;
 
     @Column
+    @Type(type = "org.hibernate.type.UUIDCharType")
     private UUID uuid;
 
     @Column(length = 90)

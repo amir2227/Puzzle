@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "shop_card")
-@JsonIgnoreProperties({"img","shopOrderCards", "shop"})
+@JsonIgnoreProperties({ "img", "shopOrderCards", "shop" })
 public class ShopCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +46,7 @@ public class ShopCard {
     private Integer discount;
     @Column
     private Integer viewCount;
-    @OneToMany(mappedBy = "card", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "card", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
     private List<ShopOrderCard> shopOrderCards;
     @ManyToOne
     @JoinColumn(name = "cardshop_id", nullable = false)

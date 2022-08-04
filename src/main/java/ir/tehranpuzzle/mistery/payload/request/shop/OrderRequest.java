@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class OrderRequest {
     private List<OrderItems> card_ids;
+    private String message;
 
    
 }

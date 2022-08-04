@@ -1,5 +1,6 @@
 package ir.tehranpuzzle.mistery.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,16 +10,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "shop_order_card")
 public class ShopOrderCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "card_id")
     private ShopCard card;
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne()
     @JoinColumn(name = "order_id")
     private ShopOrder order;
     @Column
