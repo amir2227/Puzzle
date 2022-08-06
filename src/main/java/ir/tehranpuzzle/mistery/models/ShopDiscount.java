@@ -1,37 +1,50 @@
 package ir.tehranpuzzle.mistery.models;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "shop_discount")
+@EntityListeners(AuditingEntityListener.class)
 public class ShopDiscount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 8)
     private String discountCode;
-    @Column
-    private Date createDate;
+    @Column(nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
+    private Date createdDate;
     @Column
     private Float discountAmount;
     @Column
     private Integer discountPercent;
-    @Column
+    @Column(nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date expirDate;
     @Column
     private Boolean isAvailable;
     @Column
     private Integer maxNumber;
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "shop_id")
     private Shop shop;
@@ -39,10 +52,9 @@ public class ShopDiscount {
     public ShopDiscount() {
     }
 
-    public ShopDiscount(String discountCode, Date createDate, Float discountAmount, Integer discountPercent,
+    public ShopDiscount(String discountCode, Float discountAmount, Integer discountPercent,
             Date expirDate, Boolean isAvailable, Integer maxNumber, Shop shop) {
         this.discountCode = discountCode;
-        this.createDate = createDate;
         this.discountAmount = discountAmount;
         this.discountPercent = discountPercent;
         this.expirDate = expirDate;
@@ -84,11 +96,7 @@ public class ShopDiscount {
     }
 
     public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+        return createdDate;
     }
 
     public Date getExpirDate() {

@@ -12,10 +12,12 @@ import javax.persistence.Table;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @Entity
 @Table(name = "shop_table")
+@JsonIgnoreProperties({"qrcode", "shop"})
 public class ShopTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +27,6 @@ public class ShopTable {
 
     @Column(length = 512)
     private String qrcode;
-    @JsonIgnore
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "table_shop_id")
     private Shop shop;
